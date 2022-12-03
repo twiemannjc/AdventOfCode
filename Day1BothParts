@@ -1,0 +1,29 @@
+string input = System.IO.File.ReadAllText(@"/Users/twiemann/Documents/a_c_1_1.txt");     
+int runningTotal = 0;
+int currentHigh = 0;
+int intToAdd = 0;     
+string[] calsArr = input.Split("\n");   
+List<int> scoresList = new List<int>();      
+
+foreach (string cal in calsArr) {
+
+    if (int.TryParse(cal, out intToAdd)) {
+        runningTotal += intToAdd;
+    Console.WriteLine("\nRunning total is: " + runningTotal);
+    }
+    else {
+        if (runningTotal > currentHigh) {
+            currentHigh = runningTotal;
+    } 
+    scoresList.Add(runningTotal);
+    runningTotal = 0;
+    }
+}
+
+if (runningTotal > currentHigh) {
+    currentHigh = runningTotal;
+}
+System.Console.WriteLine(currentHigh);
+scoresList.Sort();
+int total = scoresList[scoresList.Count-1] + scoresList[scoresList.Count-2] + scoresList[scoresList.Count-3];
+System.Console.WriteLine(total);
