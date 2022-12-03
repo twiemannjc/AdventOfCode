@@ -1,46 +1,45 @@
 Dictionary<string, string> translations = new Dictionary<string, string>() {
-            {"A","Rock"},
-            {"B","Paper"},
-            {"C","Scissors"},
-            {"X","Lose"},
-            {"Y","Draw"},
-            {"Z","Win"}
-        };
-        Dictionary<string, int> rubric = new Dictionary<string, int>() {
-            {"Rock",1},
-            {"Paper",2},
-            {"Scissors",3}
-        };     
-        Dictionary<string, string> loseRules = new Dictionary<string, string>() {
-            {"Rock","Scissors"},
-            {"Paper","Rock"},
-            {"Scissors","Paper"}
-        };      
-         Dictionary<string, string> winRules = new Dictionary<string, string>() {
-            {"Rock","Paper"},
-           {"Paper","Scissors"},
-           {"Scissors","Rock"}
-        };       
-        int score = 0;
-        string input = System.IO.File.ReadAllText(@"/Users/twiemann/Documents/a_c_2.txt");        
-        string[] stratGuide = input.Split("\n");
-        string scenario = "";
-        
-        foreach (var item in stratGuide) {
-            string oppPlay = translations[item.Split(' ')[0]];
-            scenario = translations[item.Split(' ')[1]];
-            if (scenario == "Win") {
-                score += 6;
-                score += rubric[winRules[oppPlay]];
-            }
-             if (scenario == "Lose") {
-                score += rubric[loseRules[oppPlay]];
-            }
-            else if (scenario == "Draw") {
-                score += 3;
-                score += rubric[oppPlay];
-            }
-            
-        }
-        System.Console.WriteLine(score);
+    {"A","Rock"},
+    {"B","Paper"},
+    {"C","Scissors"},
+    {"X","Lose"},
+    {"Y","Draw"},
+    {"Z","Win"}
+};
+Dictionary<string, int> rubric = new Dictionary<string, int>() {
+    {"Rock",1},
+    {"Paper",2},
+    {"Scissors",3}
+};     
+Dictionary<string, string> loseRules = new Dictionary<string, string>() {
+    {"Rock","Scissors"},
+    {"Paper","Rock"},
+    {"Scissors","Paper"}
+};      
+Dictionary<string, string> winRules = new Dictionary<string, string>() {
+    {"Rock","Paper"},
+    {"Paper","Scissors"},
+    {"Scissors","Rock"}
+};       
+int score = 0;
+string input = System.IO.File.ReadAllText(@"/Users/twiemann/Documents/a_c_2.txt");        
+string[] stratGuide = input.Split("\n");
+string scenario = "";
+
+foreach (var item in stratGuide) {
+    string oppPlay = translations[item.Split(' ')[0]];
+    scenario = translations[item.Split(' ')[1]];
+    if (scenario == "Win") {
+        score += 6;
+        score += rubric[winRules[oppPlay]];
     }
+        if (scenario == "Lose") {
+        score += rubric[loseRules[oppPlay]];
+    }
+    else if (scenario == "Draw") {
+        score += 3;
+        score += rubric[oppPlay];
+    }
+    
+}
+System.Console.WriteLine(score);
