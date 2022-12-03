@@ -1,0 +1,41 @@
+ Dictionary<string, string> translations = new Dictionary<string, string>() {
+    {"A","Rock"},
+    {"B","Paper"},
+    {"C","Scissors"},
+    {"X","Rock"},
+    {"Y","Paper"},
+    {"Z","Scissors"}
+};
+Dictionary<string, int>  rubric = new Dictionary<string, int>() {
+    {"Rock",1},
+    {"Paper",2},
+    {"Scissors",3}
+};     
+    Dictionary<string, string>  rules = new Dictionary<string, string>() {
+    {"Rock","Scissors"},
+    {"Paper","Rock"},
+    {"Scissors","Paper"}
+};       
+int score = 0;
+string input = System.IO.File.ReadAllText(@"/Users/twiemann/Documents/a_c_1.txt");        
+string[] stratGuide = input.Split("\n");
+
+foreach (var item in stratGuide) {
+    string oppPlay = translations[item.Split(' ')[0]];
+    System.Console.WriteLine("Opp play is " + oppPlay);
+    string myPlay = translations[item.Split(' ')[1]];
+    System.Console.WriteLine("my play is " + myPlay);
+    // tie
+    if (oppPlay == myPlay) {
+        score += 3 + rubric[myPlay];
+    }
+    // win
+    else if (rules[myPlay] ==  oppPlay) {
+        score += 6 + rubric[myPlay];
+    }
+    // loss
+        else {
+        score += rubric[myPlay];
+    }
+    System.Console.WriteLine("Round score: " + score);
+}
