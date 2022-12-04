@@ -11,9 +11,130 @@ namespace AdventOfCode
         //Day2();
         //Day2Part2();
         //Day3Part1();
-        Day3Part2();
-      
+        //Day3Part2();
+        Day4();
 	}
+
+    public static void Day4() {
+        string input = GetInput(4);
+        string[] inputs = input.Split(new Char [] {'\n' , ',' });
+        int counter = 0;
+        string[] elfOneRange = new string[2];
+        string[] elfTwoRange = new string[2];
+        int elfOneStart= 0;
+        int elfOneEnd= 0;
+        int elfTwoStart = 0;
+        int elfTwoEnd= 0;
+        List<string> elfOne = new List<string>();
+        List<string> elfTwo = new List<string>();
+        bool elfTwoContained = false;
+        bool elfOneContained = false;
+
+        // put ranges into strings
+        for (int i = 0; i < inputs.Length; i+=2) {
+            // reset lists
+            elfOne.Clear();
+            elfTwo.Clear();
+
+            elfOneRange = inputs[i].Split("-");
+            elfOneStart = int.Parse(elfOneRange[0]);
+            elfOneEnd = int.Parse(elfOneRange[1]);
+
+            elfTwoRange = inputs[i+1].Split("-");
+            elfTwoStart = int.Parse(elfTwoRange[0]);
+            elfTwoEnd = int.Parse(elfTwoRange[1]);
+
+            // add all elf one nums into char list
+            for (int a = elfOneStart; a <= elfOneEnd; a++) {
+                string aa = a.ToString();
+                elfOne.Add(aa);
+                if (elfOneStart==elfOneEnd) {break;}
+            }
+            // add all elf twp nums into char list
+            for (int b = elfTwoStart; b <= elfTwoEnd; b++) {
+                string bb = b.ToString();
+                elfTwo.Add(bb);
+                if (elfTwoStart==elfTwoEnd) {break;}
+            }
+
+            foreach (var num in elfOne) {
+               elfTwoContained = true;
+                if (!elfTwo.Contains(num)){
+                    elfTwoContained = false;
+                    break;
+                }
+            }
+
+            if (elfTwoContained){
+                counter++;
+                elfTwoContained = true;
+            }
+
+            else if (!elfTwoContained) {
+                foreach (var num in elfTwo) {
+                    elfOneContained = true;
+                    if (!elfOne.Contains(num)) {
+                        elfOneContained = false;
+                        break;
+                    }
+                }
+                  if (elfOneContained){ 
+                    counter++;
+                }
+            }
+           
+       }
+        System.Console.WriteLine("Final count part one: " + counter);
+        counter = 0;
+        // part 2
+        for (int i = 0; i < inputs.Length; i+=2) {
+            // reset lists
+            elfOne.Clear();
+            elfTwo.Clear();
+            elfOneRange = inputs[i].Split("-");
+            elfOneStart = int.Parse(elfOneRange[0]);
+            elfOneEnd = int.Parse(elfOneRange[1]);
+            elfTwoRange = inputs[i+1].Split("-");
+            elfTwoStart = int.Parse(elfTwoRange[0]);
+            elfTwoEnd = int.Parse(elfTwoRange[1]);
+
+            for (int a = elfOneStart; a <= elfOneEnd; a++) {
+                string aa = a.ToString();
+                elfOne.Add(aa);
+                if (elfOneStart==elfOneEnd) {break;}
+            }
+            for (int b = elfTwoStart; b <= elfTwoEnd; b++) {
+                string bb = b.ToString();
+                elfTwo.Add(bb);
+                if (elfTwoStart==elfTwoEnd) {break;}
+            }
+            
+            foreach (var num in elfOne) {
+               elfTwoContained = true;
+                if (!elfTwo.Contains(num)){
+                    continue;
+                }
+                else {
+                    counter++;
+                    elfTwoContained = true;
+                    break;
+                }
+            }
+
+            if (!elfTwoContained) {
+                foreach (var num in elfTwo) {
+                    if (!elfOne.Contains(num)) {
+                        continue;
+                    }
+                    else {
+                        counter++;
+                        break;     
+                    }
+                }                 
+            }    
+        }
+        System.Console.WriteLine("Final count part two: " + counter);
+    }
 
     public static void Day3Part2() {
         string input = System.IO.File.ReadAllText(@"/Users/twiemann/Documents/a_c_3.txt");        
@@ -211,6 +332,9 @@ namespace AdventOfCode
         int total = scoresList[scoresList.Count-1] + scoresList[scoresList.Count-2] + scoresList[scoresList.Count-3];
         System.Console.WriteLine(total);
     }
-
+    public static string GetInput (int day){
+        string path = @"/Users/twiemann/Documents/a_c_" + day.ToString() + ".txt";
+        return System.IO.File.ReadAllText(path);
+    }
   }
 }
