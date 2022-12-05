@@ -15,21 +15,6 @@ namespace AdventOfCode
         //Day3Part2();
         Day5();
 	}
-    public static void Day() {
-        string [] test = new string[]{
-            "A","B","C","D","E"
-        };
-        foreach (var let in test){
-            System.Console.WriteLine(let);
-        }
-        var test1 = test;
-        test[0] = "Cat";
-        System.Console.WriteLine("---After remove---");
-        foreach (var leta in test1){
-            System.Console.WriteLine(leta);
-        }
-
-    }
 
     public static void Day5() {
         Dictionary<int,List<string>> guide = new Dictionary<int, List<string>>();
