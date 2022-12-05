@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic; 
+using System.Linq;
 
 namespace AdventOfCode
 {
@@ -12,9 +13,159 @@ namespace AdventOfCode
         //Day2Part2();
         //Day3Part1();
         //Day3Part2();
-        Day4();
+        Day5();
 	}
+    public static void Day() {
+        string [] test = new string[]{
+            "A","B","C","D","E"
+        };
+        foreach (var let in test){
+            System.Console.WriteLine(let);
+        }
+        var test1 = test;
+        test[0] = "Cat";
+        System.Console.WriteLine("---After remove---");
+        foreach (var leta in test1){
+            System.Console.WriteLine(leta);
+        }
 
+    }
+
+    public static void Day5() {
+        Dictionary<int,List<string>> guide = new Dictionary<int, List<string>>();
+        Dictionary<int,int> numIndexes = new Dictionary<int, int>();
+        List<string> instructions =  new List<string>();
+
+        SetupDay5(out guide,out numIndexes,out instructions);
+
+        // part 1
+        for (int i = 0; i < instructions.Count; i++) {
+            string [] numsInstructions = instructions[i].Split(',');
+            int numToMove = int.Parse(numsInstructions[0]);
+            int from = int.Parse(numsInstructions[1]);
+            int to = int.Parse(numsInstructions[2]);
+            // iterate for each numToMove
+            for (int a = 0; a < numToMove; a++) {
+                int fromColLength = guide[from].Count;
+                string letterToMove = guide[from][fromColLength-1];
+                // remove the last letter in from col
+                guide[from].RemoveAt(fromColLength-1);
+                // add letter to the to col
+                guide[to].Add(letterToMove);
+            }
+        }
+
+        // get output for part 1
+        string output = "";
+        System.Console.WriteLine("---Output 1---");
+        foreach (var thing in guide){
+            output += thing.Value.Last();
+        }
+        System.Console.WriteLine(output);
+
+        SetupDay5(out guide,out numIndexes,out instructions);
+
+        // part 2
+         for (int i = 0; i < instructions.Count; i++) {
+            string [] numsInstructions = instructions[i].Split(',');
+            int numToMove = int.Parse(numsInstructions[0]);
+            int from = int.Parse(numsInstructions[1]);
+            int to = int.Parse(numsInstructions[2]);
+            int fromIndexToRemoveAt = guide[from].Count-numToMove;
+            int fromIndexToEndRemoveAt = guide[from].Count-1;
+            // remove the last letters in From col
+            var lettersToAdd = new List<string>();
+            for (int a = fromIndexToRemoveAt; a < guide[from].Count; a++) {
+                // add letter to the To col
+                guide[to].Add(guide[from][a]);
+            }
+            guide[from].RemoveRange(fromIndexToRemoveAt,numToMove);
+        }
+
+        System.Console.WriteLine("---Output 2---");
+        output = "";
+        foreach (var col in guide) {
+            output += col.Value.Last();
+        }
+        System.Console.WriteLine(output);
+    
+    }
+    
+    public static void SetupDay5(out Dictionary<int,List<string>> guide, out Dictionary<int,int> numIndexes, out List<string> instructions) {
+        string[] input = GetInput(5).Split('\n');
+        guide = new Dictionary<int, List<string>>();
+        numIndexes = new Dictionary<int, int>();
+        instructions = new List<string>();
+        int colNumIndex = 0;
+        string numLine = "";
+        int counter = 1;
+
+        // find number row and number assignments in instructions
+        for (int x = 0; x < input.Length; x++) {
+            string line = input[x];
+            for (int y = 0; y < line.Length; y++) {
+                if (!(int.TryParse(line[y+1].ToString(),out colNumIndex))) {
+                    // check if instruction line
+                    if (line[y]=='m') {    
+                        string [] lineItems = line.Split(' ');
+                        string instructionToAdd = "";
+                        // iterate through items in lineItems to find numbers
+                        for (int i = 0; i < lineItems.Length; i++) {
+                            // add assignments to instructions
+                            if ((int.TryParse(lineItems[i].ToString(),out colNumIndex))) {
+                                instructionToAdd += colNumIndex.ToString();
+                                if (i != lineItems.Length-1) {
+                                    instructionToAdd += ",";  
+                                }   
+                            }                         
+                        }
+                        instructions.Add(instructionToAdd);
+                    }
+                    break;
+                }
+                numLine = line;
+            }
+        }   
+
+        // setup numIndex dictionary to track where letters go
+        for (int x = 0; x < numLine.Length; x++) {
+            if (!(int.TryParse(numLine[x].ToString(),out colNumIndex))) {
+                continue;
+            }     
+            numIndexes.Add(x,counter);
+            if (!guide.ContainsKey(counter)){
+                guide.Add(counter,new List<string>());
+            }       
+            counter++;
+        }      
+
+        // setup guide
+        for (int i = 0; i < input.Length; i++) {
+            string line = input[i];
+            // loop through each char in line
+            for (int a = 0; a < line.Length; a++) {
+                 // check if instruction line
+                    if (line[a]=='m') {
+                        break;
+                    }
+                // check if letter
+                if (Char.IsLetter(line[a])) {
+                    // get the index of the letter to find which column (in the guide) to add the letter to
+                    int colNum = numIndexes[a];
+
+                    // assign next 3 chars to var
+                    string letterToAdd = line[a].ToString();
+                    // assign to guide column
+                    guide[colNum].Add(letterToAdd);
+                }
+            }
+        }
+
+        // get letters in correct order
+        foreach (var thing in guide){
+             thing.Value.Reverse();
+        }
+    }
     public static void Day4() {
         string input = GetInput(4);
         string[] inputs = input.Split(new Char [] {'\n' , ',' });
