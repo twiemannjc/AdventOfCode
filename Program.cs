@@ -13,8 +13,84 @@ namespace AdventOfCode
         //Day2Part2();
         //Day3Part1();
         //Day3Part2();
-        Day5();
+        //Day5();
+        //int result = Day6();
+        int result = Day6Part2();
+        System.Console.WriteLine(result);
 	}
+
+  public static int Day6Part2() {
+        string input = GetInput(6);
+        string fourteenLast = "";
+        List <string> lastFourteen = new List<string>();
+        bool unique = false;
+        for (int i = 0; i < input.Length; i++) {
+            // add current letter to lastFour list
+            lastFourteen.Add(input[i].ToString());
+            fourteenLast = "";
+            foreach (string letter in lastFourteen) {
+                fourteenLast += letter;
+            }
+            System.Console.WriteLine("lastFour is: "+fourteenLast);
+            for (int a = 0; a < fourteenLast.Length; a++) {
+                string otherThirteen = fourteenLast;
+                otherThirteen = otherThirteen.Remove(a,1);
+                if (otherThirteen.Contains(fourteenLast[a])) {
+                    unique = false;
+                    break;
+                }
+                else if (lastFourteen.Count >= 14) {
+                    unique = true;
+                }         
+            }
+            if (unique) {
+                return i+1;
+            }
+            if (lastFourteen.Count >= 14) {
+                lastFourteen.RemoveAt(0);
+            }
+        }
+        return 0;
+    }
+    public static int Day6() {
+        string input = GetInput(6);
+        string fourLast = "";
+        List <string> lastFour = new List<string>();
+        bool unique = false;
+        // loop thru input string
+        for (int i = 0; i < input.Length; i++) {
+            // add current letter to lastFour list
+            lastFour.Add(input[i].ToString());
+            fourLast = "";
+            foreach (string letter in lastFour) {
+                fourLast += letter;
+            }
+            // check lastFour for uniqueness
+            for (int a = 0; a < fourLast.Length; a++) {
+                string otherThree = fourLast;
+                otherThree = otherThree.Remove(a,1);
+                // if lastFour not unique, break out of check
+                if (otherThree.Contains(fourLast[a])) {
+                    unique = false;
+                    break;
+                }
+                // lastFour is unique
+                else if (lastFour.Count >= 4) {
+                    unique = true;
+                }
+               
+            }
+            if (unique) {
+                return i+1;
+            }
+
+           // remove first letter in lastFour
+            if (lastFour.Count >= 4) {
+                lastFour.RemoveAt(0);
+            }
+        }
+        return 0;
+    }
 
     public static void Day5() {
         Dictionary<int,List<string>> guide = new Dictionary<int, List<string>>();
