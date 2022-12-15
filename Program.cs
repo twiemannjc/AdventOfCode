@@ -6,16 +6,77 @@ namespace AdventOfCode
 {
   class Program
   {
-    public static int edge = 392;
-    public static int rightOffset = 2;
-    public static int leftOffset = 1;
-    public static string result = "";
-
     static void Main(string[] args)
     {
-        Day102();
+        Day11();
 	}
 
+    public static void Day11() {
+        var input = GetInput(11).Split("\n\n").ToList();
+        List<Monkey> monkeys = Monkey.SetupMonkey(input);
+        int mult = 1;
+        foreach (var monkey in monkeys) {
+               mult = mult * monkey.Test[0];
+        }
+        int rounds = 10000;
+        for (int i = 0; i < rounds; i++) {
+            //System.Console.WriteLine("\n\nRound #" + i);
+            for (int a = 0; a < monkeys.Count; a++) {
+                //System.Console.WriteLine("\n\n\nMonkey #" + a);
+                if (monkeys[a].Items.Any()) {
+                    //System.Console.WriteLine("items count " + monkeys[a].Items.Count);
+                    for (int b = 0; b < monkeys[a].Items.Count; b++) {
+                        //System.Console.WriteLine("Item #" + b + " val is " + monkeys[a].Items[b]);
+                        // set new worry level
+                        double modifierVal = 0;
+                        if (monkeys[a].Operation.Value == "old") {
+                           // System.Console.WriteLine("Operation is old");
+                            modifierVal = monkeys[a].Items[b];
+                        }
+                        else {
+                            //System.Console.WriteLine("Operation is num: " + monkeys[a].Operation.Value);
+                            modifierVal = int.Parse(monkeys[a].Operation.Value);
+                        }
+                        if (monkeys[a].Operation.Key == "*") {
+                           // System.Console.WriteLine("-Operation is *");
+                            monkeys[a].Items[b]= monkeys[a].Items[b] * modifierVal;
+                        }
+                        else {
+                            //System.Console.WriteLine("-Operation is +");
+                            monkeys[a].Items[b] = monkeys[a].Items[b] + modifierVal;
+                        }
+                        //divide by 3 and round down
+                        //monkeys[a].Items[b] = (int)Math.Floor((double)monkeys[a].Items[b]/3);
+                        monkeys[a].Items[b] = monkeys[a].Items[b]%mult;
+                        System.Console.WriteLine("Divide by 3 result is " + monkeys[a].Items[b]);
+                        // check where to throw
+                        if (monkeys[a].Items[b] % monkeys[a].Test[0] == 0) {
+                           // System.Console.WriteLine("Divisible by " + monkeys[a].Test[0] + " Throw to " + monkeys[a].Test[1]);
+                            // throw to true monkey
+                            monkeys[monkeys[a].Test[1]].Items.Add(monkeys[a].Items[b]);
+                        }
+                        else {
+                            // throw to false monkey
+                            //System.Console.WriteLine("Not divisible by " + monkeys[a].Test[0] + " Throw to " + monkeys[a].Test[2]);
+                            monkeys[monkeys[a].Test[2]].Items.Add(monkeys[a].Items[b]);
+                        }
+                        // increment inspection count34
+                        monkeys[a].InspectedCounter++;
+                        //System.Console.WriteLine("Inspection count is now " + monkeys[a].InspectedCounter);
+                    }
+                    // remove thrown items from monkey
+                    monkeys[a].Items.Clear();
+                }
+            }
+        }
+        System.Console.WriteLine(monkeys.Count);
+        monkeys = monkeys.OrderByDescending (x => x.InspectedCounter).ToList();
+        System.Console.WriteLine(monkeys.Count);
+        foreach (var monkey in monkeys) {
+            System.Console.WriteLine(monkey.InspectedCounter);
+        }
+        System.Console.WriteLine((double)monkeys[0].InspectedCounter * (double)monkeys[1].InspectedCounter);
+    }
     public static void Day102() {
         var input = GetInput(10).Split("\n").ToList();
         int x = 1;
@@ -498,7 +559,12 @@ namespace AdventOfCode
         }
         return cols;
     }
-    public static void Day7(int day) {
+    public static int edge = 392;
+    public static int rightOffset = 2;
+    public static int leftOffset = 1;
+    public static string result = "";
+   
+public static void Day7(int day) {
         System.Console.WriteLine("\n\n");
         var inputList = GetInput(day).Split("\n").ToList();
         inputList = Cleanup(inputList);
