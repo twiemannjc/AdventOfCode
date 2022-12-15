@@ -13,8 +13,100 @@ namespace AdventOfCode
 
     static void Main(string[] args)
     {
-        Day9();
+        Day102();
 	}
+
+    public static void Day102() {
+        var input = GetInput(10).Split("\n").ToList();
+        int x = 1;
+        List <string> display = new List<string>();
+        string currentRow = "";
+        bool firstAddx = true;
+        int inputCounter = 0;
+        for (int a = 0; a < 6; a++) {
+            for (int b = 1; b < 41; b++) {
+                System.Console.WriteLine("Cycle: " + b);
+                string instruction = input[inputCounter].Substring(0,4);
+                System.Console.WriteLine(instruction);
+                if (instruction == "addx") {
+                    string v = input[inputCounter].Substring(5,(input[inputCounter].Length-5));
+                    int vVal = int.Parse(v);
+                    System.Console.WriteLine("vVal: " + vVal);
+                    if (firstAddx) {
+                        firstAddx = false;
+                        inputCounter--;
+                    }
+                    else {
+                        firstAddx = true;
+                        x = x + vVal;
+                    }
+                }
+                // draw pixel
+                System.Console.WriteLine("x is " + x);
+                List<int> spritePositions = new List<int>{x-1,x,x+1};
+                System.Console.WriteLine("sprite positions: {0},{1},{2}",x-1,x,x+1);
+                if (spritePositions.Contains(b)) {
+                    System.Console.WriteLine("draw #");
+                    currentRow += "#";
+                }
+                else {
+                    System.Console.WriteLine("draw .");
+                    currentRow += ".";
+                }
+                inputCounter++;
+            }
+            display.Add(currentRow);
+            currentRow = "";
+        }     
+        foreach (var row in display) {
+            System.Console.WriteLine(row);
+        }
+    }
+
+    public static void Day10() {
+        var input = GetInput(10).Split("\n").ToList();
+        int cycle = 1;
+        int x = 1;
+        List <int> cyclesToTrack = new List<int>{20,60,100,140,180,220};
+        int resultDay10 = 0;
+        bool strenghSet = false;
+        for (int i = 0; i < input.Count; i++) {
+            System.Console.WriteLine("Cycle: " + cycle);
+            if (cyclesToTrack.Contains(cycle)) {
+                int strength = cycle * x;
+                System.Console.WriteLine("Strength: " + strength);
+                resultDay10 += strength;
+            }
+            string instruction = input[i].Substring(0,4);
+            System.Console.WriteLine(instruction);
+            if (instruction == "addx") {
+                string v = input[i].Substring(5,(input[i].Length-5));
+                int vVal = int.Parse(v);
+                System.Console.WriteLine("vVal: " + vVal);
+                for (int a = 0; a < 2; a++) {
+                    System.Console.WriteLine("Cycle: " + cycle);
+                    if (a == 0) {
+                        System.Console.WriteLine("First addx cycle. Will add next time.");
+                        cycle++;
+                        if (cyclesToTrack.Contains(cycle)) {
+                            int strength = cycle * x;
+                            System.Console.WriteLine("Strength: " + strength);
+                            resultDay10 += strength;
+                        }
+                        continue;
+                    }
+                    else {
+                        x = x + vVal;
+                        System.Console.WriteLine("Second addx cycle. x is now " + x);
+                    }
+                }
+            }
+            System.Console.WriteLine("Strength is now: " + resultDay10);
+            cycle++;
+        }
+       
+        System.Console.WriteLine("Result: " + resultDay10);
+    }
 
     public static void Day92() {
         List<string> input = GetInput(9).Split("\n").ToList();
